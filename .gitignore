@@ -3,4 +3,6 @@ build
 *.exe
 *.md
 *.html
+*.vue
 !/README.md
+test.cpp
