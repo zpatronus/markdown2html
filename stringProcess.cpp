@@ -1,6 +1,25 @@
 #include "stringProcess.h"
+#include <cctype>
 #include <string>
 using namespace std;
+int findDigit(string& s, int startFrom) {
+    int len = s.length();
+    for (int i = startFrom; i < len; i++) {
+        if (isdigit(s[i])) {
+            return i;
+        }
+    }
+    return -1;
+}
+bool isEmpty(string& s) {
+    int len = s.length();
+    for (int i = 0; i < len; i++) {
+        if (s[i] != ' ' && s[i] != '\n' && s[i] != '\0') {
+            return false;
+        }
+    }
+    return true;
+}
 string getUrl(string& s, int startFrom) {
     int startPos = findChar(s, startFrom, '(', ""), endPos = findChar(s, startFrom, ')', "");
     return s.substr(startPos + 1, endPos - startPos - 1);
@@ -60,6 +79,25 @@ Type startWith(string& s, int startFrom) {
         }
         if (isUli) {
             return Uli;
+        }
+        // Oli
+        int dotPos = findChar(s, 0, '.', "");
+        if (dotPos != -1 && s.substr(dotPos, 2) == ". ") {
+            bool isOli = true, inDigit = false;
+            for (int i = 0; i < dotPos; i++) {
+                if ((!inDigit) && s[i] == ' ') {
+                    continue;
+                }
+                if (isdigit(s[i])) {
+                    inDigit = true;
+                    continue;
+                }
+                isOli = false;
+                break;
+            }
+            if (isOli) {
+                return Oli;
+            }
         }
     }
     // ImgBracket

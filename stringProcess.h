@@ -1,5 +1,6 @@
 #ifndef DE99A324_78F6_4041_9C09_5DB4135F2509
 #define DE99A324_78F6_4041_9C09_5DB4135F2509
+#include <fstream>
 #include <string>
 using namespace std;
 /**
@@ -50,4 +51,13 @@ string getAlt(string& s, int startFrom);
  * @return int -1 if failed, otherwise the index
  */
 int findChar(string& s, int startFrom, char c, string exclude);
+/**
+ * @brief judge whether s consists of only space and \n
+ *
+ * @param s
+ * @return true
+ * @return false
+ */
+bool isEmpty(string& s);
+int findDigit(string& s, int startFrom);
 #endif /* DE99A324_78F6_4041_9C09_5DB4135F2509 */

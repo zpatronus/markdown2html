@@ -32,9 +32,7 @@ int main(int argc, char* argv[]) {
     while (!inFile.eof()) {
         string theLine;
         getline(inFile, theLine);
-        if (line.empty() || (!(isEmpty(theLine) && isEmpty(line.back())))) {
-            line.push_back(theLine);
-        }
+        line.push_back(theLine);
     }
     line.push_back("\n");
     // for (auto i : line) {
@@ -97,29 +95,24 @@ int main(int argc, char* argv[]) {
                 outFile << "<h" << spacePos << ">" + l.substr(spacePos + 1, l.length() - spacePos - 1) + "</h" << spacePos << ">";
                 break;
             }
-            if (theType == Uli || theType == Oli) {
-                string meStart = "<ul>", meEnd = "</ul>", youStart = "<ol>", youEnd = "</ol>";
-                if (theType == Oli) {
-                    swap(meEnd, youEnd);
-                    swap(meStart, youStart);
-                }
-                int dashPos = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
-                if (listType[listSize] == theType && listNum[listSize] == dashPos) {
+            if (theType == Uli) {
+                int dashPos = findChar(l, i, '-', "");
+                if (listType[listSize] == Uli && listNum[listSize] == dashPos) {
                     outFile << "</li>" << endl;
                 }
                 if (dashPos - listNum[listSize] >= 2) {
                     listSize++;
                     listNum[listSize] = dashPos;
-                    listType[listSize] = theType;
-                    outFile << meStart << endl;
+                    listType[listSize] = Uli;
+                    outFile << "<ul>" << endl;
                 } else {
                     bool isPop = false;
-                    while (listSize > 0 && (listType[listSize] != theType || listNum[listSize] - dashPos >= 2)) {
+                    while (listSize > 0 && (listType[listSize] != Uli || listNum[listSize] - dashPos >= 2)) {
                         outFile << "</li>" << endl;
-                        if (listType[listSize] != theType) {
-                            outFile << youEnd << endl;
+                        if (listType[listSize] != Uli) {
+                            outFile << "</ol>" << endl;
                         } else {
-                            outFile << meEnd << endl;
+                            outFile << "</ul>" << endl;
                         }
                         listSize--;
                         isPop = true;
@@ -129,7 +122,7 @@ int main(int argc, char* argv[]) {
                     }
                 }
                 outFile << "<li>" << endl;
-                i = (theType == Uli) ? dashPos + 2 : findChar(l, dashPos, '.', "") + 2;
+                i = dashPos + 2;
             }
             if (theType == Text) {
                 outFile << l[i];
