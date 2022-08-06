@@ -17,7 +17,7 @@ Plain text
 ## Some markdown format requirements
 
 - There should be no blank lines in an unordered/ordered list.
-- Ordered list and unordered list cannot be in the same level which next to each other.
+- Ordered list and unordered list cannot be in the same level while next to each other.
 
 ## How to compile
 
