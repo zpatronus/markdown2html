@@ -19,6 +19,7 @@
 #define DE99A324_78F6_4041_9C09_5DB4135F2509
 #include <fstream>
 #include <string>
+#include <vector>
 using namespace std;
 /**
  * @brief Text, Uli, Oli, Hr, Title, Img, ImgBracket, Hyper
@@ -76,5 +77,19 @@ int findChar(string& s, int startFrom, char c, string exclude);
  * @return false
  */
 bool isEmpty(string& s);
+/**
+ * @brief find the index of the first digit in s starting from startFrom
+ *
+ * @param s
+ * @param startFrom
+ * @return int
+ */
 int findDigit(string& s, int startFrom);
+/**
+ * @brief preprocess lines; removing blank lines
+ *
+ * @param oldLine
+ * @return vector<string>
+ */
+vector<string> preProcess(vector<string> oldLine);
 #endif /* DE99A324_78F6_4041_9C09_5DB4135F2509 */

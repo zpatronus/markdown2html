@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
         }
     }
     line.push_back("\n");
+    line = preProcess(line);
     // for (auto i : line) {
     //     cout << i << endl;
     // }
