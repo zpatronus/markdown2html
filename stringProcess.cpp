@@ -18,6 +18,7 @@
 #include "stringProcess.h"
 #include <cctype>
 #include <string>
+#include <vector>
 using namespace std;
 int findDigit(string& s, int startFrom) {
     int len = s.length();
@@ -138,4 +139,31 @@ Type startWith(string& s, int startFrom) {
         }
     }
     return Text;
+}
+vector<string> preProcess(vector<string> v) {
+    vector<string> res;
+    // when should a blank line be removed?
+    // 1. res[n] is blank
+    // 2. any blank line between two list items
+    for (auto vi = v.begin(); vi != v.end(); vi++) {
+        bool canPush = true;
+        if (isEmpty(*vi)) {
+            if (!res.empty()) {
+                if (isEmpty(res.back())) {
+                    canPush = false;
+                }
+            } else {
+                canPush = false;
+            }
+        } else if (res.size() >= 2) {
+            Type last2 = startWith(res[res.size() - 2], 0), now = startWith(*vi, 0);
+            if ((now == Uli || now == Oli) && (isEmpty(res.back())) && (last2 == Uli || last2 == Oli)) {
+                res.pop_back();
+            }
+        }
+        if (canPush) {
+            res.push_back(*vi);
+        }
+    }
+    return res;
 }

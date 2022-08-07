@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
         }
     }
     line.push_back("\n");
+    line = preProcess(line);
     // for (auto i : line) {
     //     cout << i << endl;
     // }
@@ -66,26 +67,25 @@ int main(int argc, char* argv[]) {
         outFile << "<template>" << endl;
     }
     // processing
-    Type listType[100] = {Text};
-    int listNum[100] = {0}, listSize = 0, index = -1;
-    listNum[0] = -10;
+    Type lType[100] = {Text};
+    int lNum[100] = {0}, lSize = 0, index = -1;
+    lNum[0] = -10;
     for (auto l : line) {
         index++;
         int i = 0, len = l.length();
         if (len == 0) {
-            if (listSize == 0) {
+            if (lSize == 0) {
                 if (index > 0 && index < (int)line.size() - 1 && line[index - 1].length() > 0 && line[index + 1].length() > 0 && startWith(line[index - 1], 0) == Text && startWith(line[index + 1], 0) == Text) {
                     outFile << "<br>" << endl;
                 }
             } else {
-                while (listSize > 0) {
-                    outFile << "</li>" << endl;
-                    if (listType[listSize] != Uli) {
-                        outFile << "</ol>" << endl;
-                    } else {
-                        outFile << "</ul>" << endl;
-                    }
-                    listSize--;
+                while (lSize > 0) {
+                    outFile << "</li>" << endl
+                            << ((lType[lSize] == Uli)
+                                    ? "</ul>"
+                                    : "</ol>")
+                            << endl;
+                    lSize--;
                 }
             }
             continue;
@@ -121,28 +121,30 @@ int main(int argc, char* argv[]) {
                     swap(meStart, youStart);
                 }
                 int dashPos = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
-                if (listType[listSize] == theType && listNum[listSize] == dashPos) {
+                if (lType[lSize] == theType && lNum[lSize] == dashPos) {
                     outFile << "</li>" << endl;
-                }
-                if (dashPos - listNum[listSize] >= 2) {
-                    listSize++;
-                    listNum[listSize] = dashPos;
-                    listType[listSize] = theType;
+                } else if (dashPos - lNum[lSize] >= 2) {
+                    lSize++;
+                    lNum[lSize] = dashPos;
+                    lType[lSize] = theType;
                     outFile << meStart << endl;
                 } else {
-                    bool isPop = false;
-                    while (listSize > 0 && (listType[listSize] != theType || listNum[listSize] - dashPos >= 2)) {
-                        outFile << "</li>" << endl;
-                        if (listType[listSize] != theType) {
-                            outFile << youEnd << endl;
-                        } else {
-                            outFile << meEnd << endl;
-                        }
-                        listSize--;
-                        isPop = true;
+                    // not the same type of list or higher level
+                    while (lSize > 0 && ((lType[lSize] != theType && lNum[lSize] == dashPos) || lNum[lSize] - dashPos >= 2)) {
+                        outFile
+                            << "</li>" << endl
+                            << (lType[lSize] == theType ? meEnd : youEnd) << endl;
+                        lSize--;
                     }
-                    if (isPop) {
+                    if (lSize > 0 && lType[lSize] == theType) {
+                        // same level & same type
                         outFile << "</li>" << endl;
+                    } else {
+                        // different level || different type
+                        lSize++;
+                        lNum[lSize] = dashPos;
+                        lType[lSize] = theType;
+                        outFile << meStart << endl;
                     }
                 }
                 outFile << "<li>" << endl;
