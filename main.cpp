@@ -21,34 +21,20 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "settings.h"
 #include "stringProcess.h"
 using namespace std;
 
 vector<string> line;
-int main(int argc, char* argv[]) {
-    // ==================== input file name and opening file
-    string inFileName;
-    if (argc == 1) {
-        cout << "Input .md file path: ";
-        cin >> inFileName;
-    } else {
-        if (argc == 2) {
-            inFileName = string(argv[1]);
-        } else {
-            cout << "Too many arguments" << endl;
-            return 0;
-        }
-    }
-    // cout << inFileName << endl;
-    ifstream inFile(inFileName);
-    if (!inFile.is_open()) {
-        cout << "Error opening the file" << endl;
+int main() {
+    Settings s;
+    if (s.set() != 0) {
         return 0;
     }
     // ==================== store file into vector line
-    while (!inFile.eof()) {
+    while (!s.inFile.eof()) {
         string theLine;
-        getline(inFile, theLine);
+        getline(s.inFile, theLine);
         if (line.empty() || (!(isEmpty(theLine) && isEmpty(line.back())))) {
             line.push_back(theLine);
         }
@@ -59,13 +45,7 @@ int main(int argc, char* argv[]) {
     //     cout << i << endl;
     // }
     // ===================== output file
-    string outFileName;
-    cout << "Input .html file path: ";
-    cin >> outFileName;
-    ofstream outFile(outFileName);
-    if (outFileName.substr(outFileName.length() - 3, 3) == "vue") {
-        outFile << "<template>" << endl;
-    }
+    s.beforeBody();
     // processing
     Type lType[100] = {Text};
     int lNum[100] = {0}, lSize = 0, index = -1;
@@ -76,15 +56,15 @@ int main(int argc, char* argv[]) {
         if (len == 0) {
             if (lSize == 0) {
                 if (index > 0 && index < (int)line.size() - 1 && line[index - 1].length() > 0 && line[index + 1].length() > 0 && startWith(line[index - 1], 0) == Text && startWith(line[index + 1], 0) == Text) {
-                    outFile << "<br>" << endl;
+                    s.outFile << "<br>" << endl;
                 }
             } else {
                 while (lSize > 0) {
-                    outFile << "</li>" << endl
-                            << ((lType[lSize] == Uli)
-                                    ? "</ul>"
-                                    : "</ol>")
-                            << endl;
+                    s.outFile << "</li>" << endl
+                              << ((lType[lSize] == Uli)
+                                      ? "</ul>"
+                                      : "</ol>")
+                              << endl;
                     lSize--;
                 }
             }
@@ -93,25 +73,25 @@ int main(int argc, char* argv[]) {
         while (i < len) {
             Type theType = startWith(l, i);
             if (theType == Hr) {
-                outFile << "<hr>";
+                s.outFile << "<hr>";
                 break;
             }
             if (theType == ImgBracket) {
-                outFile << "<img src=\"" + getUrl(l, i) + "\"alt=\"" + getAlt(l, i) + "\">";
+                s.outFile << "<img src=\"" + getUrl(l, i) + "\"alt=\"" + getAlt(l, i) + "\">";
                 i = findChar(l, i, ')', "") + 1;
             }
             if (theType == Hyper) {
-                outFile << "<a href=\"" + getUrl(l, i) + "\">" + getAlt(l, i) + "</a>";
+                s.outFile << "<a href=\"" + getUrl(l, i) + "\">" + getAlt(l, i) + "</a>";
                 i = findChar(l, i, ')', "") + 1;
             }
             if (theType == Img) {
                 int endPos = findChar(l, i, '>', "");
-                outFile << l.substr(i, endPos - i + 1);
+                s.outFile << l.substr(i, endPos - i + 1);
                 i = endPos + 1;
             }
             if (theType == Title) {
                 int spacePos = findChar(l, i, ' ', "");
-                outFile << "<h" << spacePos << ">" + l.substr(spacePos + 1, l.length() - spacePos - 1) + "</h" << spacePos << ">";
+                s.outFile << "<h" << spacePos << ">" + l.substr(spacePos + 1, l.length() - spacePos - 1) + "</h" << spacePos << ">";
                 break;
             }
             if (theType == Uli || theType == Oli) {
@@ -120,45 +100,43 @@ int main(int argc, char* argv[]) {
                     swap(meEnd, youEnd);
                     swap(meStart, youStart);
                 }
-                int dashPos = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
-                if (lType[lSize] == theType && lNum[lSize] == dashPos) {
-                    outFile << "</li>" << endl;
-                } else if (dashPos - lNum[lSize] >= 2) {
+                int indentCnt = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
+                if (lType[lSize] == theType && lNum[lSize] == indentCnt) {
+                    s.outFile << "</li>" << endl;
+                } else if (indentCnt - lNum[lSize] >= 2) {
                     lSize++;
-                    lNum[lSize] = dashPos;
+                    lNum[lSize] = indentCnt;
                     lType[lSize] = theType;
-                    outFile << meStart << endl;
+                    s.outFile << meStart << endl;
                 } else {
                     // not the same type of list or higher level
-                    while (lSize > 0 && ((lType[lSize] != theType && lNum[lSize] == dashPos) || lNum[lSize] - dashPos >= 2)) {
-                        outFile
+                    while (lSize > 0 && ((lType[lSize] != theType && lNum[lSize] == indentCnt) || lNum[lSize] - indentCnt >= 2)) {
+                        s.outFile
                             << "</li>" << endl
                             << (lType[lSize] == theType ? meEnd : youEnd) << endl;
                         lSize--;
                     }
                     if (lSize > 0 && lType[lSize] == theType) {
                         // same level & same type
-                        outFile << "</li>" << endl;
+                        s.outFile << "</li>" << endl;
                     } else {
                         // different level || different type
                         lSize++;
-                        lNum[lSize] = dashPos;
+                        lNum[lSize] = indentCnt;
                         lType[lSize] = theType;
-                        outFile << meStart << endl;
+                        s.outFile << meStart << endl;
                     }
                 }
-                outFile << "<li>" << endl;
-                i = (theType == Uli) ? dashPos + 2 : findChar(l, dashPos, '.', "") + 2;
+                s.outFile << "<li>" << endl;
+                i = (theType == Uli) ? indentCnt + 2 : findChar(l, indentCnt, '.', "") + 2;
             }
             if (theType == Text) {
-                outFile << l[i];
+                s.outFile << l[i];
                 i++;
             }
         }
-        outFile << endl;
+        s.outFile << endl;
     }
-    if (outFileName.substr(outFileName.length() - 3, 3) == "vue") {
-        outFile << "</template>" << endl;
-    }
+    s.afterBody();
     return 0;
 }
