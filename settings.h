@@ -1,3 +1,20 @@
+// Copyright (C) 2022 Zijun Yang <zijun.yang@outlook.com>
+//
+// This file is part of Markdown to HTML Convertor.
+//
+// Markdown to HTML Convertor is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Markdown to HTML Convertor is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Markdown to HTML Convertor.  If not, see <http://www.gnu.org/licenses/>.
+
 #ifndef A8B8F23B_68D6_41E6_A207_690B54168564
 #define A8B8F23B_68D6_41E6_A207_690B54168564
 #include <fstream>
@@ -29,38 +46,17 @@ class Settings {
      *
      * @return int 0 if everything's fine, other if something went wrong
      */
-    int set() {
-        cout << "Input markdown file path: ";
-        cin >> inFileName;
-        inFile.open(inFileName);
-        if (!inFile.is_open()) {
-            cout << "Error opening the markdown file." << endl;
-            return 1;
-        }
-        cout << "Input output file path: ";
-        cin >> outFileName;
-        outFile.open(outFileName);
-        if (!outFile.is_open()) {
-            cout << "Error opening output file." << endl;
-            return 2;
-        }
-        if (outFileName.substr(outFileName.length() - 3, 3) == "vue") {
-            type = VUE;
-        }
-        return 0;
-    }
-    void beforeBody() {
-        if (type == VUE) {
-            outFile << "<template>" << endl;
-        } else if (type == HTML) {
-        }
-    }
-    void afterBody() {
-        if (type == VUE) {
-            outFile << "</template>" << endl;
-        } else if (type == HTML) {
-        }
-    }
+    int set();
+    /**
+     * @brief lines added before the body, such as <head>, <template>
+     *
+     */
+    void beforeBody();
+    /**
+     * @brief lines added after the body, such as <style>
+     *
+     */
+    void afterBody();
 };
 
 #endif /* A8B8F23B_68D6_41E6_A207_690B54168564 */
