@@ -91,5 +91,12 @@ int findDigit(string& s, int startFrom);
  * @param oldLine
  * @return vector<string>
  */
-vector<string> preProcess(vector<string> oldLine);
+vector<string> preProcess(ifstream& inFile);
+/**
+ * @brief convert line(markdown) to outFile(html)
+ *
+ * @param outFile
+ * @param line
+ */
+void convert(ifstream& inFile, ofstream& outFile);
 #endif /* DE99A324_78F6_4041_9C09_5DB4135F2509 */
