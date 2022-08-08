@@ -15,21 +15,38 @@
 // You should have received a copy of the GNU General Public License
 // along with Markdown to HTML Convertor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
 #include "settings.h"
-#include "stringProcess.h"
+#include <iostream>
 using namespace std;
-int main() {
-    cout << "    markdown2html  Copyright (C) 2022  Zijun Yang <zijun.yang@outlook.com>" << endl
-         << "    This program comes with ABSOLUTELY NO WARRANTY." << endl
-         << "    This is free software, and you are welcome to redistribute it" << endl
-         << "    under certain conditions." << endl;
-    Settings s;
-    if (s.set() != 0) {
-        return 0;
+int Settings::set() {
+    cout << "Input markdown file path: ";
+    cin >> inFileName;
+    inFile.open(inFileName);
+    if (!inFile.is_open()) {
+        cout << "Error opening the markdown file." << endl;
+        return 1;
     }
-    s.beforeBody();
-    convert(s.inFile, s.outFile);
-    s.afterBody();
+    cout << "Input output file path: ";
+    cin >> outFileName;
+    outFile.open(outFileName);
+    if (!outFile.is_open()) {
+        cout << "Error opening output file." << endl;
+        return 2;
+    }
+    if (outFileName.substr(outFileName.length() - 3, 3) == "vue") {
+        type = VUE;
+    }
     return 0;
+}
+void Settings::beforeBody() {
+    if (type == VUE) {
+        outFile << "<template>" << endl;
+    } else if (type == HTML) {
+    }
+}
+void Settings::afterBody() {
+    if (type == VUE) {
+        outFile << "</template>" << endl;
+    } else if (type == HTML) {
+    }
 }
