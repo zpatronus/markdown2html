@@ -17,6 +17,7 @@
 
 #include <cmath>
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -27,6 +28,10 @@ using namespace std;
 
 vector<string> line;
 int main() {
+    cout << "    markdown2html  Copyright (C) 2022  Zijun Yang <zijun.yang@outlook.com>" << endl
+         << "    This program comes with ABSOLUTELY NO WARRANTY." << endl
+         << "    This is free software, and you are welcome to redistribute it" << endl
+         << "    under certain conditions." << endl;
     Settings s;
     if (s.set() != 0) {
         return 0;
