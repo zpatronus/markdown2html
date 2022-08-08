@@ -40,23 +40,14 @@ int Settings::set() {
     return 0;
 }
 void Settings::beforeBody() {
-    if (type == VUE) {
-        outFile << "<template>" << endl
-                << "<div>" << endl;
-    } else if (type == HTML) {
-        outFile << "<!DOCTYPE html><html lang = \"en\" ><head><meta charset = \"UTF-8\"><meta http-equiv = \"X-UA-Compatible\" content = \"IE=edge\"><meta name = \"viewport\" content = \"width=device-width, initial-scale=1.0\"><title>" << endl
-                << outFileName.substr(0, findChar(outFileName, 0, '.', ""))
-                << "</title></head><body>" << endl
-                << endl;
-    }
+    string s[10];
+    s[VUE] = "<div>\n<template>\n";
+    s[HTML] = "<!DOCTYPE html><html lang = \"en\" ><head><meta charset = \"UTF-8\"><meta http-equiv = \"X-UA-Compatible\" content = \"IE=edge\"><meta name = \"viewport\" content = \"width=device-width, initial-scale=1.0\"><title>" + outFileName.substr(0, findChar(outFileName, 0, '.', "")) + "</title></head><body>\n\n";
+    outFile << s[type];
 }
 void Settings::afterBody() {
-    if (type == VUE) {
-        outFile << "</div>" << endl
-                << "</template>" << endl;
-    } else if (type == HTML) {
-        outFile << endl
-                << endl
-                << "</body></html>" << endl;
-    }
+    string s[10];
+    s[VUE] = "</div>\n</template>\n";
+    s[HTML] = "\n\n</body></html>\n";
+    outFile << s[type];
 }
