@@ -17,6 +17,7 @@
 
 #include "settings.h"
 #include <iostream>
+#include "stringProcess.h"
 using namespace std;
 int Settings::set() {
     cout << "Input markdown file path: ";
@@ -40,13 +41,22 @@ int Settings::set() {
 }
 void Settings::beforeBody() {
     if (type == VUE) {
-        outFile << "<template>" << endl;
+        outFile << "<template>" << endl
+                << "<div>" << endl;
     } else if (type == HTML) {
+        outFile << "<!DOCTYPE html><html lang = \"en\" ><head><meta charset = \"UTF-8\"><meta http-equiv = \"X-UA-Compatible\" content = \"IE=edge\"><meta name = \"viewport\" content = \"width=device-width, initial-scale=1.0\"><title>" << endl
+                << outFileName.substr(0, findChar(outFileName, 0, '.', ""))
+                << "</title></head><body>" << endl
+                << endl;
     }
 }
 void Settings::afterBody() {
     if (type == VUE) {
-        outFile << "</template>" << endl;
+        outFile << "</div>" << endl
+                << "</template>" << endl;
     } else if (type == HTML) {
+        outFile << endl
+                << endl
+                << "</body></html>" << endl;
     }
 }
