@@ -17,7 +17,14 @@
 
 #include "settings.h"
 #include <iostream>
+#include "stringProcess.h"
 using namespace std;
+string getTypeName(FileType t) {
+    string fileName[10];
+    fileName[HTML] = "html";
+    fileName[VUE] = "vue";
+    return fileName[t];
+}
 int Settings::set() {
     cout << "Input markdown file path: ";
     cin >> inFileName;
@@ -39,14 +46,28 @@ int Settings::set() {
     return 0;
 }
 void Settings::beforeBody() {
-    if (type == VUE) {
-        outFile << "<template>" << endl;
-    } else if (type == HTML) {
+    ifstream file("./source/" + getTypeName(type) + "Start.html");
+    while (!file.eof()) {
+        string theLine;
+        getline(file, theLine);
+        if (theLine == "thisShouldBeTheTitleOfYourWebsite") {
+            theLine = outFileName.substr(0, findChar(outFileName, 0, '.', ""));
+        }
+        outFile << theLine << endl;
     }
 }
 void Settings::afterBody() {
-    if (type == VUE) {
-        outFile << "</template>" << endl;
-    } else if (type == HTML) {
+    ifstream file("./source/" + getTypeName(type) + "End.html");
+    while (!file.eof()) {
+        string theLine;
+        getline(file, theLine);
+        outFile << theLine << endl;
+    }
+    file.close();
+    file.open("./source/darkCss.html");
+    while (!file.eof()) {
+        string theLine;
+        getline(file, theLine);
+        outFile << theLine << endl;
     }
 }
