@@ -19,6 +19,12 @@
 #include <iostream>
 #include "stringProcess.h"
 using namespace std;
+string getTypeName(FileType t) {
+    string fileName[10];
+    fileName[HTML] = "html";
+    fileName[VUE] = "vue";
+    return fileName[t];
+}
 int Settings::set() {
     cout << "Input markdown file path: ";
     cin >> inFileName;
@@ -40,14 +46,28 @@ int Settings::set() {
     return 0;
 }
 void Settings::beforeBody() {
-    string s[10];
-    s[VUE] = "<div>\n<template>\n";
-    s[HTML] = "<!DOCTYPE html><html lang = \"en\" ><head><meta charset = \"UTF-8\"><meta http-equiv = \"X-UA-Compatible\" content = \"IE=edge\"><meta name = \"viewport\" content = \"width=device-width, initial-scale=1.0\"><title>" + outFileName.substr(0, findChar(outFileName, 0, '.', "")) + "</title></head><body>\n\n";
-    outFile << s[type];
+    ifstream file("./source/" + getTypeName(type) + "Start.html");
+    while (!file.eof()) {
+        string theLine;
+        getline(file, theLine);
+        if (theLine == "thisShouldBeTheTitleOfYourWebsite") {
+            theLine = outFileName.substr(0, findChar(outFileName, 0, '.', ""));
+        }
+        outFile << theLine << endl;
+    }
 }
 void Settings::afterBody() {
-    string s[10];
-    s[VUE] = "</div>\n</template>\n";
-    s[HTML] = "\n\n</body></html>\n";
-    outFile << s[type];
+    ifstream file("./source/" + getTypeName(type) + "End.html");
+    while (!file.eof()) {
+        string theLine;
+        getline(file, theLine);
+        outFile << theLine << endl;
+    }
+    file.close();
+    file.open("./source/darkCss.html");
+    while (!file.eof()) {
+        string theLine;
+        getline(file, theLine);
+        outFile << theLine << endl;
+    }
 }

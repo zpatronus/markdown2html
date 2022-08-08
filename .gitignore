@@ -2,7 +2,7 @@
 build
 *.exe
 *.md
-*.html
+/*.html
 *.vue
 !/README.md
 test.cpp
