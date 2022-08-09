@@ -31,5 +31,8 @@ int main() {
     s.beforeBody();
     convert(s.inFile, s.outFile);
     s.afterBody();
+    cout << "DONE. Press enter to exit.";
+    fflush(stdin);
+    getchar();
     return 0;
 }

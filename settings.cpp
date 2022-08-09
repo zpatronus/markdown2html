@@ -16,7 +16,9 @@
 // along with Markdown to HTML Convertor.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "settings.h"
+#include <iomanip>
 #include <iostream>
+#include <string>
 #include "stringProcess.h"
 using namespace std;
 string getTypeName(FileType t) {
@@ -56,6 +58,28 @@ void Settings::beforeBody() {
         outFile << theLine << endl;
     }
 }
+string selectTheme() {
+    string themes[10];
+    themes[0] = "default";
+    themes[1] = "githubLight";
+    themes[2] = "githubDark";
+    themes[3] = "light";
+    themes[4] = "dark";
+    cout << "Pick your theme:" << endl;
+    for (int i = 0; i <= 4; i++) {
+        cout << setw(2) << i << ": " << setw(14) << themes[i] << endl;
+    }
+    cout << "Enter number to choose theme; default: 0" << endl
+         << "> ";
+    string s;
+    fflush(stdin);
+    getline(cin, s);
+    int res = stoi("0" + s);
+    if (!(0 <= res && res <= 4)) {
+        res = 0;
+    }
+    return themes[res];
+}
 void Settings::afterBody() {
     ifstream file("./source/" + getTypeName(type) + "End.html");
     while (!file.eof()) {
@@ -64,7 +88,12 @@ void Settings::afterBody() {
         outFile << theLine << endl;
     }
     file.close();
-    file.open("./source/darkCss.html");
+    // select style
+    file.open("./source/" + selectTheme() + "Css.html");
+    if (!(file.is_open())) {
+        cout << "Error opening css file" << endl;
+        return;
+    }
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
