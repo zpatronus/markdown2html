@@ -6,3 +6,4 @@ build
 *.vue
 !/README.md
 test.cpp
+/release
