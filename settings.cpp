@@ -59,14 +59,16 @@ void Settings::beforeBody() {
     }
 }
 string selectTheme() {
-    string themes[10];
-    themes[0] = "default";
-    themes[1] = "githubLight";
-    themes[2] = "githubDark";
-    themes[3] = "light";
-    themes[4] = "dark";
+    vector<string> themes;
+    themes.push_back("default");
+    themes.push_back("githubLight");
+    themes.push_back("githubDark");
+    themes.push_back("light");
+    themes.push_back("dark");
+    themes.push_back("lightCompact");
+    themes.push_back("darkCompact");
     cout << "Pick your theme:" << endl;
-    for (int i = 0; i <= 4; i++) {
+    for (int i = 0; i < (int)themes.size(); i++) {
         cout << setw(2) << i << ": " << setw(14) << themes[i] << endl;
     }
     cout << "Enter number to choose theme; default: 0" << endl
@@ -75,7 +77,7 @@ string selectTheme() {
     fflush(stdin);
     getline(cin, s);
     int res = stoi("0" + s);
-    if (!(0 <= res && res <= 4)) {
+    if (!(0 <= res && res < (int)themes.size())) {
         res = 0;
     }
     return themes[res];
