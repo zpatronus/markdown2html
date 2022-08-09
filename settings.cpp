@@ -64,7 +64,7 @@ void Settings::afterBody() {
         outFile << theLine << endl;
     }
     file.close();
-    file.open("./source/darkCss.html");
+    file.open("./source/defaultCss.html");
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
