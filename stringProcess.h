@@ -33,7 +33,8 @@ enum Type {
     Title,  // start with
     Img,
     ImgBracket,
-    Hyper
+    Hyper,
+    CodeBlock  // start with
 };
 /**
  * @brief judge string s[startFrom]~s[s.len] start from what

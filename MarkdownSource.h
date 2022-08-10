@@ -15,24 +15,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Markdown to HTML Convertor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <iostream>
-#include "Settings.h"
+#ifndef B04F0136_CA7D_47CC_92DD_F58FDAB6C35E
+#define B04F0136_CA7D_47CC_92DD_F58FDAB6C35E
+
+#include <string>
+#include <vector>
 #include "stringProcess.h"
 using namespace std;
-int main() {
-    cout << "    markdown2html  Copyright (C) 2022  Zijun Yang <zijun.yang@outlook.com>" << endl
-         << "    This program comes with ABSOLUTELY NO WARRANTY." << endl
-         << "    This is free software, and you are welcome to redistribute it" << endl
-         << "    under certain conditions." << endl;
-    Settings s;
-    if (s.set() != 0) {
-        return 0;
-    }
-    s.beforeBody();
-    convert(s.inFile, s.outFile);
-    s.afterBody();
-    cout << "DONE. Press enter to exit.";
-    fflush(stdin);
-    getchar();
-    return 0;
+class MarkdownSource {
+   protected:
+    vector<string> lines;
+    vector<Type> types;
+
+   public:
+    MarkdownSource(vector<string>&);
 }
+
+#endif /* B04F0136_CA7D_47CC_92DD_F58FDAB6C35E */
