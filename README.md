@@ -14,6 +14,8 @@ Unordered/ordered list
 
 Plain text
 
+Code blocks (` ``` `)
+
 ## How to compile
 
 The project uses `CMake` as building tool.
