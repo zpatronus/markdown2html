@@ -20,8 +20,6 @@ Code blocks (` ``` `)
 
 The project uses `CMake` as building tool.
 
-## How to uses
-
 ## How to use (in Windows)
 
 1. Download and unzip `markdown2html-x.x.x.zip`
