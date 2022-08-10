@@ -20,22 +20,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include "MarkdownSource.h"
 using namespace std;
-/**
- * @brief Text, Uli, Oli, Hr, Title, Img, ImgBracket, Hyper
- *
- */
-enum Type {
-    Text,   // start with
-    Uli,    // start with
-    Oli,    // start with
-    Hr,     // start with
-    Title,  // start with
-    Img,
-    ImgBracket,
-    Hyper,
-    CodeBlock  // start with
-};
+
 /**
  * @brief judge string s[startFrom]~s[s.len] start from what
  *

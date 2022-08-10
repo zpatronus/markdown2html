@@ -18,6 +18,24 @@
 #ifndef B04F0136_CA7D_47CC_92DD_F58FDAB6C35E
 #define B04F0136_CA7D_47CC_92DD_F58FDAB6C35E
 
+/**
+ * @brief Text, Uli, Oli, Hr, Title, Img, ImgBracket, Hyper
+ *
+ */
+enum Type {
+    Text,   // start with
+    Uli,    // start with
+    Oli,    // start with
+    Hr,     // start with
+    Title,  // start with
+    Img,
+    ImgBracket,
+    Hyper,
+    CodeBlock  // start with
+};
+
+#include <fstream>
+#include <iostream>
 #include <string>
 #include <vector>
 #include "stringProcess.h"
@@ -25,10 +43,34 @@ using namespace std;
 class MarkdownSource {
    protected:
     vector<string> lines;
+    // the types here only records start with
     vector<Type> types;
+    int size;
+    /**
+     * @brief use input vector to init
+     *
+     */
+    void copy(vector<string>);
 
    public:
     MarkdownSource(vector<string>&);
-}
+    MarkdownSource(ifstream&);
+    int getSize() const { return size; }
+    Type type(int i) const {
+        if (i < 0 || i >= size) {
+            cout << "get type() error: index out of boundary";
+            return Text;
+        }
+        return types[i];
+    }
+    string l(int i) const {
+        if (i < 0 || i >= size) {
+            cout << "get l() error: index out of boundary";
+            return "";
+        }
+        return lines[i];
+    }
+    void convertTo(ofstream&);
+};
 
 #endif /* B04F0136_CA7D_47CC_92DD_F58FDAB6C35E */

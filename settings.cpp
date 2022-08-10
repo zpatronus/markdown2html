@@ -69,7 +69,7 @@ string selectTheme() {
     themes.push_back("darkCompact");
     cout << "Pick your theme:" << endl;
     for (int i = 0; i < (int)themes.size(); i++) {
-        cout << setw(2) << i << ": " << setw(14) << left << themes[i] << endl;
+        cout << setw(2) << right << i << ": " << setw(14) << left << themes[i] << endl;
     }
     cout << "Enter number to choose theme; default: 0" << endl
          << "> ";

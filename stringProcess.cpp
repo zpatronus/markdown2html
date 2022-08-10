@@ -118,6 +118,10 @@ Type startWith(string& s, int startFrom) {
                 return Oli;
             }
         }
+        // CodeBlock
+        if (s.substr(0, 3) == "```") {
+            return CodeBlock;
+        }
     }
     // ImgBracket
     if (s.substr(startFrom, 2) == "![") {
@@ -179,97 +183,4 @@ vector<string> preProcess(ifstream& inFile) {
         }
     }
     return res;
-}
-void convert(ifstream& inFile, ofstream& outFile) {
-    vector<string> line = preProcess(inFile);
-    Type lType[100] = {Text};
-    int lNum[100] = {0}, lSize = 0, index = -1;
-    lNum[0] = -10;
-    for (auto l : line) {
-        index++;
-        int i = 0, len = l.length();
-        if (len == 0) {
-            if (lSize == 0) {
-                if (index > 0 && index < (int)line.size() - 1 && line[index - 1].length() > 0 && line[index + 1].length() > 0 && startWith(line[index - 1], 0) == Text && startWith(line[index + 1], 0) == Text) {
-                    outFile << "<br>" << endl;
-                }
-            } else {
-                while (lSize > 0) {
-                    outFile << "</li>" << endl
-                            << ((lType[lSize] == Uli)
-                                    ? "</ul>"
-                                    : "</ol>")
-                            << endl;
-                    lSize--;
-                }
-            }
-            continue;
-        }
-        while (i < len) {
-            Type theType = startWith(l, i);
-            if (theType == Hr) {
-                outFile << "<hr>";
-                break;
-            }
-            if (theType == ImgBracket) {
-                outFile << "<img src=\"" + getUrl(l, i) + "\"alt=\"" + getAlt(l, i) + "\">";
-                i = findChar(l, i, ')', "") + 1;
-            }
-            if (theType == Hyper) {
-                outFile << "<a href=\"" + getUrl(l, i) + "\">" + getAlt(l, i) + "</a>";
-                i = findChar(l, i, ')', "") + 1;
-            }
-            if (theType == Img) {
-                int endPos = findChar(l, i, '>', "");
-                outFile << l.substr(i, endPos - i + 1);
-                i = endPos + 1;
-            }
-            if (theType == Title) {
-                int spacePos = findChar(l, i, ' ', "");
-                outFile << "<h" << spacePos << ">" + l.substr(spacePos + 1, l.length() - spacePos - 1) + "</h" << spacePos << ">";
-                break;
-            }
-            if (theType == Uli || theType == Oli) {
-                string meStart = "<ul>", meEnd = "</ul>", youStart = "<ol>", youEnd = "</ol>";
-                if (theType == Oli) {
-                    swap(meEnd, youEnd);
-                    swap(meStart, youStart);
-                }
-                int indentCnt = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
-                if (lType[lSize] == theType && lNum[lSize] == indentCnt) {
-                    outFile << "</li>" << endl;
-                } else if (indentCnt - lNum[lSize] >= 2) {
-                    lSize++;
-                    lNum[lSize] = indentCnt;
-                    lType[lSize] = theType;
-                    outFile << meStart << endl;
-                } else {
-                    // not the same type of list or higher level
-                    while (lSize > 0 && ((lType[lSize] != theType && lNum[lSize] == indentCnt) || lNum[lSize] - indentCnt >= 2)) {
-                        outFile
-                            << "</li>" << endl
-                            << (lType[lSize] == theType ? meEnd : youEnd) << endl;
-                        lSize--;
-                    }
-                    if (lSize > 0 && lType[lSize] == theType) {
-                        // same level & same type
-                        outFile << "</li>" << endl;
-                    } else {
-                        // different level || different type
-                        lSize++;
-                        lNum[lSize] = indentCnt;
-                        lType[lSize] = theType;
-                        outFile << meStart << endl;
-                    }
-                }
-                outFile << "<li>" << endl;
-                i = (theType == Uli) ? indentCnt + 2 : findChar(l, indentCnt, '.', "") + 2;
-            }
-            if (theType == Text) {
-                outFile << l[i];
-                i++;
-            }
-        }
-        outFile << endl;
-    }
 }
