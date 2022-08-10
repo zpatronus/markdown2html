@@ -73,9 +73,9 @@ void MarkdownSource::convertTo(ofstream& outFile) {
         if (types[index] == CodeBlock) {
             if (l.substr(0, 3) == "```") {
                 if (!isInCodeBlocks) {
-                    outFile << "<pre><code>";  // no endl should be added
+                    outFile << "<pre>" << endl;
                 } else {
-                    outFile << "</code></pre>" << endl;
+                    outFile << "</pre>" << endl;
                 }
                 isInCodeBlocks = !isInCodeBlocks;
             } else {
