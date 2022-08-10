@@ -29,7 +29,9 @@ int main() {
         return 0;
     }
     s.beforeBody();
-    convert(s.inFile, s.outFile);
+    MarkdownSource source(s.inFile);
+    source.convertTo(s.outFile);
+    // convert(s.inFile, s.outFile);
     s.afterBody();
     cout << "DONE. Press enter to exit.";
     fflush(stdin);
