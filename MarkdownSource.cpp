@@ -53,6 +53,19 @@ void MarkdownSource::convertTo(ofstream& outFile) {
     for (auto l : lines) {
         index++;
         int i = 0, len = l.length();
+        if (types[index] == CodeBlock) {
+            if (l.substr(0, 3) == "```") {
+                if (!isInCodeBlocks) {
+                    outFile << "<pre>" << endl;
+                } else {
+                    outFile << "</pre>" << endl;
+                }
+                isInCodeBlocks = !isInCodeBlocks;
+            } else {
+                outFile << l << endl;
+            }
+            continue;
+        }
         if (len == 0) {
             if (lSize == 0) {
                 if (index > 0 && index < size - 1 && lines[index - 1].length() > 0 && lines[index + 1].length() > 0 && startWith(lines[index - 1], 0) == Text && startWith(lines[index + 1], 0) == Text) {
@@ -67,19 +80,6 @@ void MarkdownSource::convertTo(ofstream& outFile) {
                             << endl;
                     lSize--;
                 }
-            }
-            continue;
-        }
-        if (types[index] == CodeBlock) {
-            if (l.substr(0, 3) == "```") {
-                if (!isInCodeBlocks) {
-                    outFile << "<pre>" << endl;
-                } else {
-                    outFile << "</pre>" << endl;
-                }
-                isInCodeBlocks = !isInCodeBlocks;
-            } else {
-                outFile << l << endl;
             }
             continue;
         }

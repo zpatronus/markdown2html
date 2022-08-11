@@ -147,40 +147,50 @@ Type startWith(string& s, int startFrom) {
 }
 vector<string> preProcess(ifstream& inFile) {
     vector<string> v;
+    bool isInCodeBlocks = false;
     while (!inFile.eof()) {
         string theLine;
         getline(inFile, theLine);
-        if (v.empty() || (!(isEmpty(theLine) && isEmpty(v.back())))) {
+        if (startWith(theLine, 0) == CodeBlock) {
+            isInCodeBlocks = !isInCodeBlocks;
+        }
+        if (v.empty() || isInCodeBlocks || (!(isEmpty(theLine) && isEmpty(v.back())))) {
             v.push_back(theLine);
         }
     }
     v.push_back("\n");
-    // for (auto i : res) {
-    //     cout << i << endl;
-    // }
     // when should a blank res be removed?
     // 1. res[n] is blank
     // 2. any blank res between two list items
     vector<string> res;
+    isInCodeBlocks = false;
     for (auto vi = v.begin(); vi != v.end(); vi++) {
         bool canPush = true;
-        if (isEmpty(*vi)) {
-            if (!res.empty()) {
-                if (isEmpty(res.back())) {
+        if (startWith(*vi, 0) == CodeBlock) {
+            isInCodeBlocks = !isInCodeBlocks;
+        }
+        if (!isInCodeBlocks) {
+            if (isEmpty(*vi)) {
+                if (!res.empty()) {
+                    if (isEmpty(res.back())) {
+                        canPush = false;
+                    }
+                } else {
                     canPush = false;
                 }
-            } else {
-                canPush = false;
-            }
-        } else if (res.size() >= 2) {
-            Type last2 = startWith(res[res.size() - 2], 0), now = startWith(*vi, 0);
-            if ((now == Uli || now == Oli) && (isEmpty(res.back())) && (last2 == Uli || last2 == Oli)) {
-                res.pop_back();
+            } else if (res.size() >= 2) {
+                Type last2 = startWith(res[res.size() - 2], 0), now = startWith(*vi, 0);
+                if ((now == Uli || now == Oli) && (isEmpty(res.back())) && (last2 == Uli || last2 == Oli)) {
+                    res.pop_back();
+                }
             }
         }
         if (canPush) {
             res.push_back(*vi);
         }
     }
+    // for (auto i : res) {
+    //     cout << i << endl;
+    // }
     return res;
 }
