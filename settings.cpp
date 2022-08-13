@@ -91,14 +91,16 @@ void Settings::afterBody() {
     }
     file.close();
     // select style
-    file.open("./source/" + selectTheme() + "Css.html");
+    file.open("./source/" + selectTheme() + ".css");
     if (!(file.is_open())) {
         cout << "Error opening css file" << endl;
         return;
     }
+    outFile << "<style>" << endl;
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
         outFile << theLine << endl;
     }
+    outFile << "</style>" << endl;
 }

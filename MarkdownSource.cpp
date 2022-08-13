@@ -83,8 +83,13 @@ void MarkdownSource::convertTo(ofstream& outFile) {
             }
             continue;
         }
+        bool isInInlineCode = false;
         while (i < len) {
+            // remember to add i
             Type theType = startWith(l, i);
+            if (isInInlineCode && (theType != InlineCode)) {
+                theType = Text;
+            }
             if (theType == Hr) {
                 outFile << "<hr>";
                 break;
@@ -142,6 +147,15 @@ void MarkdownSource::convertTo(ofstream& outFile) {
                 }
                 outFile << "<li>" << endl;
                 i = (theType == Uli) ? indentCnt + 2 : findChar(l, indentCnt, '.', "") + 2;
+            }
+            if (theType == InlineCode) {
+                if (!isInInlineCode) {
+                    outFile << "<code>";
+                } else {
+                    outFile << "</code>";
+                }
+                isInInlineCode = !isInInlineCode;
+                i++;
             }
             if (theType == Text) {
                 outFile << l[i];

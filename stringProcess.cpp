@@ -62,9 +62,6 @@ int findChar(string& s, int startFrom, char c, string exclude) {
     return -1;
 }
 Type startWith(string& s, int startFrom) {
-    if (s.substr(startFrom, 4) == "<img") {
-        return Img;
-    }
     int len = s.length();
     if (startFrom == 0) {
         if (s.substr(0, 3) == "---") {
@@ -123,6 +120,10 @@ Type startWith(string& s, int startFrom) {
             return CodeBlock;
         }
     }
+    // Img
+    if (s.substr(startFrom, 4) == "<img") {
+        return Img;
+    }
     // ImgBracket
     if (s.substr(startFrom, 2) == "![") {
         int pos = findChar(s, startFrom + 2, ']', "");
@@ -142,6 +143,10 @@ Type startWith(string& s, int startFrom) {
         if (pos != -1) {
             return Hyper;
         }
+    }
+    // InlineCode
+    if (s.substr(startFrom, 1) == "`") {
+        return InlineCode;
     }
     return Text;
 }

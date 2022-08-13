@@ -31,7 +31,8 @@ enum Type {
     Img,
     ImgBracket,
     Hyper,
-    CodeBlock  // start with
+    CodeBlock,  // start with
+    InlineCode
 };
 
 #include <fstream>
