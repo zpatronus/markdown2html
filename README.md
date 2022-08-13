@@ -40,7 +40,7 @@ The project uses `CMake` as building tool.
 
 Themes are now supported.
 
-There are a total of 5 themes.
+There are a total of 7 themes.
 
 - default
 - githubDark
