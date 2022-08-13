@@ -14,7 +14,9 @@ Unordered/ordered list
 
 Plain text
 
-Code blocks (` ``` `)
+Code blocks (` ``` ``` `)
+
+Inline code blocks (` `` `)
 
 ## How to compile
 
