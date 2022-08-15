@@ -83,85 +83,59 @@ void MarkdownSource::convertTo(ofstream& outFile) {
             }
             continue;
         }
-        bool isInInlineCode = false;
-        while (i < len) {
-            // remember to add i
-            Type theType = startWith(l, i);
-            if (isInInlineCode && (theType != InlineCode)) {
-                theType = Text;
+
+        Type theType = startWith(l, 0);
+
+        if (theType == Hr) {
+            outFile << "<hr>";
+            continue;
+        }
+
+        if (theType == Title) {
+            int spacePos = findChar(l, i, ' ', "");
+            outFile << "<h" << spacePos << ">" << endl;
+            processLine(l, spacePos + 1, outFile);
+            outFile << "</h" << spacePos << ">" << endl;
+            continue;
+        }
+
+        if (theType == Uli || theType == Oli) {
+            string meStart = "<ul>", meEnd = "</ul>", youStart = "<ol>", youEnd = "</ol>";
+            if (theType == Oli) {
+                swap(meEnd, youEnd);
+                swap(meStart, youStart);
             }
-            if (theType == Hr) {
-                outFile << "<hr>";
-                break;
-            }
-            if (theType == ImgBracket) {
-                outFile << "<img src=\"" + getUrl(l, i) + "\"alt=\"" + getAlt(l, i) + "\">";
-                i = findChar(l, i, ')', "") + 1;
-            }
-            if (theType == Hyper) {
-                outFile << "<a href=\"" + getUrl(l, i) + "\">" + getAlt(l, i) + "</a>";
-                i = findChar(l, i, ')', "") + 1;
-            }
-            if (theType == Img) {
-                int endPos = findChar(l, i, '>', "");
-                outFile << l.substr(i, endPos - i + 1);
-                i = endPos + 1;
-            }
-            if (theType == Title) {
-                int spacePos = findChar(l, i, ' ', "");
-                outFile << "<h" << spacePos << ">" + l.substr(spacePos + 1, l.length() - spacePos - 1) + "</h" << spacePos << ">";
-                break;
-            }
-            if (theType == Uli || theType == Oli) {
-                string meStart = "<ul>", meEnd = "</ul>", youStart = "<ol>", youEnd = "</ol>";
-                if (theType == Oli) {
-                    swap(meEnd, youEnd);
-                    swap(meStart, youStart);
+            int indentCnt = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
+            if (lType[lSize] == theType && lNum[lSize] == indentCnt) {
+                outFile << "</li>" << endl;
+            } else if (indentCnt - lNum[lSize] >= 2) {
+                lSize++;
+                lNum[lSize] = indentCnt;
+                lType[lSize] = theType;
+                outFile << meStart << endl;
+            } else {
+                // not the same type of list or higher level
+                while (lSize > 0 && ((lType[lSize] != theType && lNum[lSize] == indentCnt) || lNum[lSize] - indentCnt >= 2)) {
+                    outFile
+                        << "</li>" << endl
+                        << (lType[lSize] == theType ? meEnd : youEnd) << endl;
+                    lSize--;
                 }
-                int indentCnt = (theType == Uli) ? findChar(l, i, '-', "") : findDigit(l, i);
-                if (lType[lSize] == theType && lNum[lSize] == indentCnt) {
+                if (lSize > 0 && lType[lSize] == theType) {
+                    // same level & same type
                     outFile << "</li>" << endl;
-                } else if (indentCnt - lNum[lSize] >= 2) {
+                } else {
+                    // different level || different type
                     lSize++;
                     lNum[lSize] = indentCnt;
                     lType[lSize] = theType;
                     outFile << meStart << endl;
-                } else {
-                    // not the same type of list or higher level
-                    while (lSize > 0 && ((lType[lSize] != theType && lNum[lSize] == indentCnt) || lNum[lSize] - indentCnt >= 2)) {
-                        outFile
-                            << "</li>" << endl
-                            << (lType[lSize] == theType ? meEnd : youEnd) << endl;
-                        lSize--;
-                    }
-                    if (lSize > 0 && lType[lSize] == theType) {
-                        // same level & same type
-                        outFile << "</li>" << endl;
-                    } else {
-                        // different level || different type
-                        lSize++;
-                        lNum[lSize] = indentCnt;
-                        lType[lSize] = theType;
-                        outFile << meStart << endl;
-                    }
                 }
-                outFile << "<li>" << endl;
-                i = (theType == Uli) ? indentCnt + 2 : findChar(l, indentCnt, '.', "") + 2;
             }
-            if (theType == InlineCode) {
-                if (!isInInlineCode) {
-                    outFile << "<code>";
-                } else {
-                    outFile << "</code>";
-                }
-                isInInlineCode = !isInInlineCode;
-                i++;
-            }
-            if (theType == Text) {
-                outFile << l[i];
-                i++;
-            }
+            outFile << "<li>" << endl;
+            processLine(l, (theType == Uli) ? indentCnt + 2 : findChar(l, indentCnt, '.', "") + 2, outFile);
+            continue;
         }
-        outFile << endl;
+        processLine(l, 0, outFile);
     }
 }

@@ -87,4 +87,12 @@ vector<string> preProcess(ifstream& inFile);
  * @param line
  */
 void convert(ifstream& inFile, ofstream& outFile);
+/**
+ * @brief turn a markdown line l into html
+ *
+ * @param l must not contain anything meaningful at its start, i.e. l can only consist of text, inline code, img, and hyper link
+ * @param startFrom start from which index
+ * @param outFile the output file
+ */
+void processLine(string& l, int startFrom, ofstream& outFile);
 #endif /* DE99A324_78F6_4041_9C09_5DB4135F2509 */

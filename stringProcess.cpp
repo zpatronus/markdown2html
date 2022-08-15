@@ -199,3 +199,41 @@ vector<string> preProcess(ifstream& inFile) {
     // }
     return res;
 }
+void processLine(string& l, int startFrom, ofstream& outFile) {
+    int i = startFrom, len = l.length();
+    bool isInInlineCode = false;
+    while (i < len) {
+        // remember to add i
+        Type theType = startWith(l, i);
+        if (isInInlineCode && (theType != InlineCode)) {
+            theType = Text;
+        }
+        if (theType == ImgBracket) {
+            outFile << "<img src=\"" + getUrl(l, i) + "\"alt=\"" + getAlt(l, i) + "\">";
+            i = findChar(l, i, ')', "") + 1;
+        }
+        if (theType == Hyper) {
+            outFile << "<a href=\"" + getUrl(l, i) + "\">" + getAlt(l, i) + "</a>";
+            i = findChar(l, i, ')', "") + 1;
+        }
+        if (theType == Img) {
+            int endPos = findChar(l, i, '>', "");
+            outFile << l.substr(i, endPos - i + 1);
+            i = endPos + 1;
+        }
+        if (theType == InlineCode) {
+            if (!isInInlineCode) {
+                outFile << "<code>";
+            } else {
+                outFile << "</code>";
+            }
+            isInInlineCode = !isInInlineCode;
+            i++;
+        }
+        if (theType == Text) {
+            outFile << l[i];
+            i++;
+        }
+    }
+    outFile << endl;
+}
