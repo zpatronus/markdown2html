@@ -48,7 +48,7 @@ int Settings::set() {
     return 0;
 }
 void Settings::beforeBody() {
-    ifstream file("./source/" + getTypeName(type) + "Start.html");
+    ifstream file("./source/html/" + getTypeName(type) + "Start.html");
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
@@ -83,7 +83,7 @@ string selectTheme() {
     return themes[res];
 }
 void Settings::afterBody() {
-    ifstream file("./source/" + getTypeName(type) + "End.html");
+    ifstream file("./source/html/" + getTypeName(type) + "End.html");
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
@@ -91,7 +91,7 @@ void Settings::afterBody() {
     }
     file.close();
     // select style
-    file.open("./source/" + selectTheme() + ".css");
+    file.open("./source/css/" + selectTheme() + ".css");
     if (!(file.is_open())) {
         cout << "Error opening css file" << endl;
         return;
