@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Markdown to HTML Convertor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "settings.h"
+#include "Settings.h"
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -37,6 +37,26 @@ int Settings::set() {
     }
     cout << "Input output file path: ";
     cin >> outFileName;
+    outFile.open(outFileName);
+    if (!outFile.is_open()) {
+        cout << "Error opening output file." << endl;
+        return 2;
+    }
+    if (outFileName.substr(outFileName.length() - 3, 3) == "vue") {
+        type = VUE;
+    }
+    return 0;
+}
+int Settings::set(string inFileName, string outFileName, bool addHtml = true, bool addCss = true) {
+    this->inFileName = inFileName;
+    this->outFileName = outFileName;
+    this->addHtml = addHtml;
+    this->addCss = addCss;
+    inFile.open(inFileName);
+    if (!inFile.is_open()) {
+        cout << "Error opening the markdown file." << endl;
+        return 1;
+    }
     outFile.open(outFileName);
     if (!outFile.is_open()) {
         cout << "Error opening output file." << endl;
@@ -103,4 +123,35 @@ void Settings::afterBody() {
         outFile << theLine << endl;
     }
     outFile << "</style>" << endl;
+}
+int MultiSettings::set() {
+    string s1, s2;
+    cout << "Input markdown file path(s): ";
+    cin >> s1;
+    s1 = s1 + " ";
+    cout << "Input output file path(s); leave blank to set automatically: ";
+    cin >> s2;
+    s2 = s2 + " ";
+    int i1 = 0, i2 = 0;
+    int l1 = s1.length();
+    int l2 = s2.length();
+    while (i1 < l1 && s1[i1] == ' ') {
+        i1++;
+    }
+    while (i2 < l2 && s2[i2] == ' ') {
+        i2++;
+    }
+    if (isEmpty(s2)) {
+        while (!isEmpty(s1, i1)) {
+            Settings theSettings;
+            string fileName = fileNameStartFrom(s1, i1);
+            if (theSettings.set(fileName, pureFileName(fileName) + ".html", true, true) != 0) {
+                return settingsVec.size() + 1;
+            }
+
+            settingsVec.insert(settingsVec.end(), theSettings);
+        }
+    } else {
+    }
+    return 0;
 }

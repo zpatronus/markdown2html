@@ -20,6 +20,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 enum FileType {
@@ -38,7 +39,7 @@ class Settings {
     ifstream inFile;
     ofstream outFile;
     Settings()
-        : inFileName(""), outFileName(""), addHtml(false), addCss(false), type(HTML) {}
+        : inFileName(""), outFileName(""), addHtml(true), addCss(true), type(HTML) {}
     string getInFileName() const { return inFileName; }
     string getOutFileName() const { return outFileName; }
     /**
@@ -47,6 +48,16 @@ class Settings {
      * @return int 0 if everything's fine, other if something went wrong
      */
     int set();
+    /**
+     * @brief get settings from arg
+     *
+     * @param inFileName
+     * @param outFileName
+     * @param addHtml
+     * @param addCss
+     * @return int
+     */
+    int set(string inFileName, string outFileName, bool addHtml, bool addCss);
     /**
      * @brief lines added before the body, such as <head>, <template>
      *
@@ -57,6 +68,14 @@ class Settings {
      *
      */
     void afterBody();
+};
+
+class MultiSettings {
+   protected:
+    vector<Settings> settingsVec;
+
+   public:
+    int set();
 };
 
 #endif /* A8B8F23B_68D6_41E6_A207_690B54168564 */

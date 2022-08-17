@@ -66,6 +66,15 @@ int findChar(string& s, int startFrom, char c, string exclude);
  */
 bool isEmpty(string& s);
 /**
+ * @brief judge whether s consists of only space and \n from startFrom
+ *
+ * @param s
+ * @param startFrom
+ * @return true
+ * @return false
+ */
+bool isEmpty(string& s, int startFrom);
+/**
  * @brief find the index of the first digit in s starting from startFrom
  *
  * @param s
@@ -95,4 +104,19 @@ void convert(ifstream& inFile, ofstream& outFile);
  * @param outFile the output file
  */
 void processLine(string& l, int startFrom, ofstream& outFile);
+/**
+ * @brief extract pure file name from a file name. eg. return "index" from "index.md"
+ *
+ * @param s
+ * @return string return "NotAFileName" if s does not contain '.'
+ */
+string pureFileName(string& s);
+/**
+ * @brief extract file name from s start from index startFrom. e.g. s="1.md 2.md 3.md", startFrom=4, return "2.md"
+ *
+ * @param s must end with a space
+ * @param startFrom
+ * @return string return "NoMoreFileName" if there's no file name
+ */
+string fileNameStartFrom(string& s, int startFrom);
 #endif /* DE99A324_78F6_4041_9C09_5DB4135F2509 */
