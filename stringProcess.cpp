@@ -39,6 +39,15 @@ bool isEmpty(string& s) {
     }
     return true;
 }
+bool isEmpty(string& s, int startFrom) {
+    int len = s.length();
+    for (int i = startFrom; i < len; i++) {
+        if (s[i] != ' ' && s[i] != '\n' && s[i] != '\0') {
+            return false;
+        }
+    }
+    return true;
+}
 string getUrl(string& s, int startFrom) {
     int startPos = findChar(s, startFrom, '(', ""), endPos = findChar(s, startFrom, ')', "");
     return s.substr(startPos + 1, endPos - startPos - 1);
