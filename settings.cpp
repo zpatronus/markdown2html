@@ -30,15 +30,23 @@ string getTypeName(FileType t) {
 int Settings::set() {
     cout << "Input markdown file path: ";
     cin >> inFileName;
-    inFile.open(inFileName);
-    if (!inFile.is_open()) {
+    if (inFile != nullptr) {
+        delete inFile;
+    }
+    inFile = new ifstream;
+    inFile->open(inFileName);
+    if (!inFile->is_open()) {
         cout << "Error opening the markdown file." << endl;
         return 1;
     }
     cout << "Input output file path: ";
     cin >> outFileName;
-    outFile.open(outFileName);
-    if (!outFile.is_open()) {
+    if (outFile != nullptr) {
+        delete outFile;
+    }
+    outFile = new ofstream;
+    outFile->open(outFileName);
+    if (!outFile->is_open()) {
         cout << "Error opening output file." << endl;
         return 2;
     }
@@ -52,13 +60,21 @@ int Settings::set(string inFileName, string outFileName, bool addHtml = true, bo
     this->outFileName = outFileName;
     this->addHtml = addHtml;
     this->addCss = addCss;
-    inFile.open(inFileName);
-    if (!inFile.is_open()) {
+    if (inFile != nullptr) {
+        delete inFile;
+    }
+    inFile = new ifstream;
+    inFile->open(inFileName);
+    if (!inFile->is_open()) {
         cout << "Error opening the markdown file." << endl;
         return 1;
     }
-    outFile.open(outFileName);
-    if (!outFile.is_open()) {
+    if (outFile != nullptr) {
+        delete outFile;
+    }
+    outFile = new ofstream;
+    outFile->open(outFileName);
+    if (!outFile->is_open()) {
         cout << "Error opening output file." << endl;
         return 2;
     }
@@ -75,7 +91,7 @@ void Settings::beforeBody() {
         if (theLine == "thisShouldBeTheTitleOfYourWebsite") {
             theLine = outFileName.substr(0, findChar(outFileName, 0, '.', ""));
         }
-        outFile << theLine << endl;
+        *outFile << theLine << endl;
     }
 }
 string selectTheme() {
@@ -107,7 +123,7 @@ void Settings::afterBody() {
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
-        outFile << theLine << endl;
+        *outFile << theLine << endl;
     }
     file.close();
     // select style
@@ -116,13 +132,13 @@ void Settings::afterBody() {
         cout << "Error opening css file" << endl;
         return;
     }
-    outFile << "<style>" << endl;
+    *outFile << "<style>" << endl;
     while (!file.eof()) {
         string theLine;
         getline(file, theLine);
-        outFile << theLine << endl;
+        *outFile << theLine << endl;
     }
-    outFile << "</style>" << endl;
+    *outFile << "</style>" << endl;
 }
 int MultiSettings::set() {
     string s1, s2;
@@ -149,7 +165,7 @@ int MultiSettings::set() {
                 return settingsVec.size() + 1;
             }
 
-            settingsVec.insert(settingsVec.end(), theSettings);
+            // settingsVec.insert(settingsVec.end(), theSettings);
         }
     } else {
     }

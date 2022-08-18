@@ -28,9 +28,11 @@ int main() {
     if (s.set() != 0) {
         return 0;
     }
+    cout << "Set done" << endl;
     s.beforeBody();
-    MarkdownSource source(s.inFile);
-    source.convertTo(s.outFile);
+    // cout << "Before body done" << endl;
+    MarkdownSource source(*(s.inFile));
+    source.convertTo(*(s.outFile));
     // convert(s.inFile, s.outFile);
     s.afterBody();
     cout << "DONE. Press enter to exit.";

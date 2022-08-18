@@ -36,10 +36,20 @@ class Settings {
     FileType type;
 
    public:
-    ifstream inFile;
-    ofstream outFile;
+    ifstream* inFile;
+    ofstream* outFile;
     Settings()
-        : inFileName(""), outFileName(""), addHtml(true), addCss(true), type(HTML) {}
+        : inFileName(""), outFileName(""), addHtml(true), addCss(true), type(HTML), inFile(nullptr), outFile(nullptr) {}
+    ~Settings() {
+        if (inFile != nullptr) {
+            inFile->close();
+            delete inFile;
+        }
+        if (outFile != nullptr) {
+            outFile->close();
+            delete outFile;
+        }
+    }
     string getInFileName() const { return inFileName; }
     string getOutFileName() const { return outFileName; }
     /**
