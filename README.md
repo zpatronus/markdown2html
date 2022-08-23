@@ -18,6 +18,8 @@ Code blocks (` ``` ``` `)
 
 Inline code blocks (` `` `)
 
+Convert multiple files
+
 ## How to compile
 
 The project uses `CMake` as building tool.
