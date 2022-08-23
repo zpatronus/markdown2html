@@ -76,6 +76,7 @@ int nextNotBlankPos(string& s, int startFrom) {
         if (s[i] != ' ' && s[i] != '\n') {
             return i;
         }
+        i++;
     }
     return -1;
 }
@@ -263,7 +264,7 @@ string pureFileName(string& s) {
     while (s[i] != '.') {
         i--;
     }
-    return s.substr(0, i + 1);
+    return s.substr(0, i);
 }
 string fileNameStartFrom(string& s, int startFrom) {
     int i = startFrom;

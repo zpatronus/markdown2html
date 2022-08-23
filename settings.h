@@ -88,6 +88,7 @@ class MultiSettings {
 
    public:
     int set();
+    void convert();
 };
 
 #endif /* A8B8F23B_68D6_41E6_A207_690B54168564 */

@@ -160,10 +160,12 @@ void Settings::convert(string theme) {
 int MultiSettings::set() {
     string s1, s2;
     cout << "Input markdown file path(s): ";
-    cin >> s1;
+    fflush(stdin);
+    getline(cin, s1);
     s1 = s1 + " ";
     cout << "Input output file path(s); leave blank to set automatically: ";
-    cin >> s2;
+    fflush(stdin);
+    getline(cin, s2);
     s2 = s2 + " ";
     int i1 = 0, i2 = 0;
     int l1 = s1.length();
@@ -188,13 +190,24 @@ int MultiSettings::set() {
         while (i1 != -1 && i2 != -1) {
             Settings* settingsPtr = new Settings;
             string fileName = fileNameStartFrom(s1, i1);
-            if (settingsPtr->set(fileName, pureFileName(fileName) + ".html", true, true) != 0) {
+            string outFileName = fileNameStartFrom(s2, i2);
+            if (settingsPtr->set(fileName, outFileName, true, true) != 0) {
                 return settingsVec.size() + 1;
             }
             settingsVec.push_back(settingsPtr);
             i1 = nextNotBlankPos(s1, findChar(s1, i1, ' ', ""));
+            i2 = nextNotBlankPos(s2, findChar(s2, i2, ' ', ""));
         }
     }
     theme = selectTheme();
+    cout << "Set done" << endl;
     return 0;
+}
+void MultiSettings::convert() {
+    for (auto settingPtr : settingsVec) {
+        settingPtr->convert(theme);
+    }
+    cout << "DONE. Press enter to exit.";
+    fflush(stdin);
+    getchar();
 }

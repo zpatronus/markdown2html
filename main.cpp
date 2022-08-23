@@ -24,14 +24,19 @@ int main() {
          << "    This program comes with ABSOLUTELY NO WARRANTY." << endl
          << "    This is free software, and you are welcome to redistribute it" << endl
          << "    under certain conditions." << endl;
-    Settings s;
+    // Settings s;
+    // if (s.set() != 0) {
+    //     return 0;
+    // }
+    // cout << "Set done" << endl;
+    // s.convert();
+    // cout << "DONE. Press enter to exit.";
+    // fflush(stdin);
+    // getchar();
+    MultiSettings s;
     if (s.set() != 0) {
         return 0;
     }
-    cout << "Set done" << endl;
     s.convert();
-    cout << "DONE. Press enter to exit.";
-    fflush(stdin);
-    getchar();
     return 0;
 }
