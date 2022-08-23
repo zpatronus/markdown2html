@@ -94,6 +94,11 @@ void Settings::beforeBody() {
         *outFile << theLine << endl;
     }
 }
+/**
+ * @brief return the theme's name
+ *
+ * @return string
+ */
 string selectTheme() {
     vector<string> themes;
     themes.push_back("default");
@@ -118,7 +123,7 @@ string selectTheme() {
     }
     return themes[res];
 }
-void Settings::afterBody() {
+void Settings::afterBody(string theme) {
     ifstream file("./source/html/" + getTypeName(type) + "End.html");
     while (!file.eof()) {
         string theLine;
@@ -127,7 +132,11 @@ void Settings::afterBody() {
     }
     file.close();
     // select style
-    file.open("./source/css/" + selectTheme() + ".css");
+    if (theme == "noThemeSelected") {
+        file.open("./source/css/" + selectTheme() + ".css");
+    } else {
+        file.open("./source/css/" + theme + ".css");
+    }
     if (!(file.is_open())) {
         cout << "Error opening css file" << endl;
         return;
@@ -139,6 +148,14 @@ void Settings::afterBody() {
         *outFile << theLine << endl;
     }
     *outFile << "</style>" << endl;
+}
+void Settings::convert(string theme) {
+    beforeBody();
+    // cout << "Before body done" << endl;
+    MarkdownSource source(*(inFile));
+    source.convertTo(*(outFile));
+    // convert(s.inFile, s.outFile);
+    afterBody(theme);
 }
 int MultiSettings::set() {
     string s1, s2;
@@ -158,16 +175,26 @@ int MultiSettings::set() {
         i2++;
     }
     if (isEmpty(s2)) {
-        while (!isEmpty(s1, i1)) {
-            Settings theSettings;
+        while (i1 != -1) {
+            Settings* settingsPtr = new Settings;
             string fileName = fileNameStartFrom(s1, i1);
-            if (theSettings.set(fileName, pureFileName(fileName) + ".html", true, true) != 0) {
+            if (settingsPtr->set(fileName, pureFileName(fileName) + ".html", true, true) != 0) {
                 return settingsVec.size() + 1;
             }
-
-            // settingsVec.insert(settingsVec.end(), theSettings);
+            settingsVec.push_back(settingsPtr);
+            i1 = nextNotBlankPos(s1, findChar(s1, i1, ' ', ""));
         }
     } else {
+        while (i1 != -1 && i2 != -1) {
+            Settings* settingsPtr = new Settings;
+            string fileName = fileNameStartFrom(s1, i1);
+            if (settingsPtr->set(fileName, pureFileName(fileName) + ".html", true, true) != 0) {
+                return settingsVec.size() + 1;
+            }
+            settingsVec.push_back(settingsPtr);
+            i1 = nextNotBlankPos(s1, findChar(s1, i1, ' ', ""));
+        }
     }
+    theme = selectTheme();
     return 0;
 }

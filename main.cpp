@@ -29,12 +29,7 @@ int main() {
         return 0;
     }
     cout << "Set done" << endl;
-    s.beforeBody();
-    // cout << "Before body done" << endl;
-    MarkdownSource source(*(s.inFile));
-    source.convertTo(*(s.outFile));
-    // convert(s.inFile, s.outFile);
-    s.afterBody();
+    s.convert();
     cout << "DONE. Press enter to exit.";
     fflush(stdin);
     getchar();

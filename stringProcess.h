@@ -119,4 +119,12 @@ string pureFileName(string& s);
  * @return string return "NoMoreFileName" if there's no file name
  */
 string fileNameStartFrom(string& s, int startFrom);
+/**
+ * @brief find next none blank char in s starting from s; if s[startFrom] is not blank, return startFrom
+ *
+ * @param s
+ * @param startFrom
+ * @return int return -1 if s starting from startFrom is empty
+ */
+int nextNotBlankPos(string& s, int startFrom);
 #endif /* DE99A324_78F6_4041_9C09_5DB4135F2509 */

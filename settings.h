@@ -77,12 +77,14 @@ class Settings {
      * @brief lines added after the body, such as <style>
      *
      */
-    void afterBody();
+    void afterBody(string theme = "noThemeSelected");
+    void convert(string theme = "noThemeSelected");
 };
 
 class MultiSettings {
    protected:
-    vector<Settings> settingsVec;
+    vector<Settings*> settingsVec;
+    string theme;
 
    public:
     int set();

@@ -70,6 +70,15 @@ int findChar(string& s, int startFrom, char c, string exclude) {
     }
     return -1;
 }
+int nextNotBlankPos(string& s, int startFrom) {
+    int i = startFrom, len = s.length();
+    while (i < len) {
+        if (s[i] != ' ' && s[i] != '\n') {
+            return i;
+        }
+    }
+    return -1;
+}
 Type startWith(string& s, int startFrom) {
     int len = s.length();
     if (startFrom == 0) {
