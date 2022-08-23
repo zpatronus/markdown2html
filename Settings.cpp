@@ -16,6 +16,7 @@
 // along with Markdown to HTML Convertor.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Settings.h"
+#include <filesystem>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -26,6 +27,15 @@ string getTypeName(FileType t) {
     fileName[HTML] = "html";
     fileName[VUE] = "vue";
     return fileName[t];
+}
+void createDir(string outFileName) {
+    int l = outFileName.length(), i = l - 1;
+    while (i >= 0 && outFileName[i] != '/' && outFileName[i] != '\\') {
+        i--;
+    }
+    if (i >= 0) {
+        filesystem::create_directories(outFileName.substr(0, i + 1));
+    }
 }
 int Settings::set() {
     cout << "Input markdown file path: ";
@@ -41,6 +51,7 @@ int Settings::set() {
     }
     cout << "Input output file path: ";
     cin >> outFileName;
+    createDir(outFileName);
     if (outFile != nullptr) {
         delete outFile;
     }
@@ -60,6 +71,7 @@ int Settings::set(string inFileName, string outFileName, bool addHtml = true, bo
     this->outFileName = outFileName;
     this->addHtml = addHtml;
     this->addCss = addCss;
+    createDir(outFileName);
     if (inFile != nullptr) {
         delete inFile;
     }
