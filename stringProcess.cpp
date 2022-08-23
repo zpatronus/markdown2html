@@ -70,6 +70,16 @@ int findChar(string& s, int startFrom, char c, string exclude) {
     }
     return -1;
 }
+int nextNotBlankPos(string& s, int startFrom) {
+    int i = startFrom, len = s.length();
+    while (i < len) {
+        if (s[i] != ' ' && s[i] != '\n') {
+            return i;
+        }
+        i++;
+    }
+    return -1;
+}
 Type startWith(string& s, int startFrom) {
     int len = s.length();
     if (startFrom == 0) {
@@ -245,4 +255,26 @@ void processLine(string& l, int startFrom, ofstream& outFile) {
         }
     }
     outFile << endl;
+}
+string pureFileName(string& s) {
+    if (findChar(s, 0, '.', "") == -1) {
+        return "NotAFileName";
+    }
+    int i = s.length() - 1;
+    while (s[i] != '.') {
+        i--;
+    }
+    return s.substr(0, i);
+}
+string fileNameStartFrom(string& s, int startFrom) {
+    int i = startFrom;
+    int len = s.length();
+    while (i < len - 1 && s[i] == ' ') {
+        i++;
+    }
+    if (i >= len) {
+        return "NoMoreFileName";
+    }
+    int startPos = i, endPos = findChar(s, startPos, ' ', "");
+    return s.substr(startPos, endPos - startPos);
 }

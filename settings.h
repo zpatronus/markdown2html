@@ -20,6 +20,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 enum FileType {
@@ -35,10 +36,20 @@ class Settings {
     FileType type;
 
    public:
-    ifstream inFile;
-    ofstream outFile;
+    ifstream* inFile;
+    ofstream* outFile;
     Settings()
-        : inFileName(""), outFileName(""), addHtml(false), addCss(false), type(HTML) {}
+        : inFileName(""), outFileName(""), addHtml(true), addCss(true), type(HTML), inFile(nullptr), outFile(nullptr) {}
+    ~Settings() {
+        if (inFile != nullptr) {
+            inFile->close();
+            delete inFile;
+        }
+        if (outFile != nullptr) {
+            outFile->close();
+            delete outFile;
+        }
+    }
     string getInFileName() const { return inFileName; }
     string getOutFileName() const { return outFileName; }
     /**
@@ -48,6 +59,16 @@ class Settings {
      */
     int set();
     /**
+     * @brief get settings from arg
+     *
+     * @param inFileName
+     * @param outFileName
+     * @param addHtml
+     * @param addCss
+     * @return int
+     */
+    int set(string inFileName, string outFileName, bool addHtml, bool addCss);
+    /**
      * @brief lines added before the body, such as <head>, <template>
      *
      */
@@ -56,7 +77,18 @@ class Settings {
      * @brief lines added after the body, such as <style>
      *
      */
-    void afterBody();
+    void afterBody(string theme = "noThemeSelected");
+    void convert(string theme = "noThemeSelected");
+};
+
+class MultiSettings {
+   protected:
+    vector<Settings*> settingsVec;
+    string theme;
+
+   public:
+    int set();
+    void convert();
 };
 
 #endif /* A8B8F23B_68D6_41E6_A207_690B54168564 */
