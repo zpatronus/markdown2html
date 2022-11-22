@@ -18,10 +18,6 @@
 #ifndef B04F0136_CA7D_47CC_92DD_F58FDAB6C35E
 #define B04F0136_CA7D_47CC_92DD_F58FDAB6C35E
 
-/**
- * @brief Text, Uli, Oli, Hr, Title, Img, ImgBracket, Hyper
- *
- */
 enum Type {
     Text,   // start with
     Uli,    // start with
@@ -41,6 +37,11 @@ enum Type {
 #include <vector>
 #include "stringProcess.h"
 using namespace std;
+/**
+ * @brief Text, Uli, Oli, Hr, Title, Img, ImgBracket, Hyper
+ *
+ */
+
 class MarkdownSource {
    protected:
     vector<string> lines;

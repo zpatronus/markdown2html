@@ -3,4 +3,4 @@ project(markdown2html VERSION 1.2.2)
 
 add_compile_options(-Wall -Wextra -Wpedantic -std=c++1z)
 
-add_executable(markdown2html main.cpp stringProcess.cpp stringProcess.h Settings.h Settings.cpp MarkdownSource.h MarkdownSource.cpp)
+add_executable(markdown2html main.cpp stringProcess.cpp Settings.cpp MarkdownSource.cpp)
